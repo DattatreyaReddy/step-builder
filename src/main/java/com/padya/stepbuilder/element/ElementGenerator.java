@@ -6,8 +6,8 @@ import com.padya.stepbuilder.model.Property;
 import static com.google.common.base.Joiner.on;
 import static com.google.common.collect.Lists.transform;
 import static java.lang.String.format;
-import static org.apache.commons.lang.StringUtils.capitalize;
-import static org.apache.commons.lang.StringUtils.uncapitalize;
+import static org.apache.commons.lang3.StringUtils.capitalize;
+import static org.apache.commons.lang3.StringUtils.uncapitalize;
 
 public class ElementGenerator {
     public String builderClass(Pojo pojo) {

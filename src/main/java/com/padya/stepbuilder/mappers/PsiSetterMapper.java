@@ -2,7 +2,7 @@ package com.padya.stepbuilder.mappers;
 
 import com.intellij.psi.PsiMethod;
 import com.padya.stepbuilder.model.Property;
-import org.apache.commons.lang.StringUtils;
+import static org.apache.commons.lang3.StringUtils.uncapitalize;
 
 import static com.padya.stepbuilder.model.Property.Builder.property;
 
@@ -21,6 +21,6 @@ public class PsiSetterMapper implements PsiMapper<PsiMethod> {
     }
 
     private String getPropertyName(PsiMethod psiMethod) {
-        return StringUtils.uncapitalize(psiMethod.getName().substring(3));
+        return uncapitalize(psiMethod.getName().substring(3));
     }
 }
