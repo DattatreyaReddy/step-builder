@@ -4,15 +4,16 @@ package com.padya.stepbuilder.dialog;
  * @author mkasprzak
  */
 public enum DialogFactories {
-   FROM_METHODS(new FromSettersDialogFactory());
-   private final DialogFactory dialogFactory;
+    FROM_METHODS(new FromSettersDialogFactory());
 
-   private DialogFactories(DialogFactory dialogFactory) {
+    private final DialogFactory dialogFactory;
 
-      this.dialogFactory = dialogFactory;
-   }
+    DialogFactories(DialogFactory dialogFactory) {
 
-   public DialogFactory get(){
-      return this.dialogFactory;
-   }
+        this.dialogFactory = dialogFactory;
+    }
+
+    public DialogFactory get() {
+        return this.dialogFactory;
+    }
 }

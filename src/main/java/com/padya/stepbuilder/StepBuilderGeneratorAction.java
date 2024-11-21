@@ -9,8 +9,6 @@ import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
-import java.util.List;
-import com.padya.stepbuilder.model.Property;
 import com.padya.stepbuilder.properties.*;
 import org.jetbrains.annotations.NotNull;
 
@@ -23,7 +21,7 @@ public class StepBuilderGeneratorAction extends AnAction {
     }
 
     @Override
-    public void update(AnActionEvent e) {
+    public void update(@NotNull AnActionEvent e) {
         boolean val = getCurrentClass(e) != null;
         e.getPresentation().setEnabled(val);
     }
@@ -36,21 +34,21 @@ public class StepBuilderGeneratorAction extends AnAction {
     }
 
     private PsiClass getPsiClass(PsiElement currentElement) {
-        return currentElement == null ? null : PsiTreeUtil.getParentOfType(currentElement, PsiClass.class);
+        return currentElement == null ? null
+            : PsiTreeUtil.getParentOfType(currentElement, PsiClass.class);
     }
 
-    private void generate(final PsiElement currentElement, final PsiClass psiClass, PropertiesProvider propertiesProvider) {
-        propertiesProvider.getProperties(psiClass, new PropertiesConsumer() {
-            @Override
-            public void consume(List<Property> properties) {
-                stepBuilderGenerator.generateBuilderPattern(properties, psiClass, currentElement);
-            }
-        });
+    private void generate(final PsiElement currentElement, final PsiClass psiClass,
+        PropertiesProvider propertiesProvider) {
+        propertiesProvider.getProperties(psiClass,
+            properties -> stepBuilderGenerator.generateBuilderPattern(properties, psiClass,
+                currentElement));
     }
 
     private PsiClass getCurrentClass(AnActionEvent e) {
         PsiElement currentElement = getCurrentElement(e);
-        return currentElement == null ? null : PsiTreeUtil.getParentOfType(currentElement, PsiClass.class);
+        return currentElement == null ? null
+            : PsiTreeUtil.getParentOfType(currentElement, PsiClass.class);
     }
 
     private PsiElement getCurrentElement(AnActionEvent e) {

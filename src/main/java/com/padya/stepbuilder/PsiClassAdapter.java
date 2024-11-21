@@ -29,7 +29,8 @@ public class PsiClassAdapter {
         PsiMethod[] constructors = psiClass.getConstructors();
         PsiMethod biggestConstructor = null;
         for (PsiMethod constructor : constructors) {
-            if (biggestConstructor == null || parametersCount(constructor) > parametersCount(biggestConstructor)) {
+            if (biggestConstructor == null || parametersCount(constructor) > parametersCount(
+                biggestConstructor)) {
                 biggestConstructor = constructor;
             }
         }
@@ -43,5 +44,4 @@ public class PsiClassAdapter {
     private List<PsiParameter> getArgumentsOf(PsiMethod biggestConstructor) {
         return asList(biggestConstructor.getParameterList().getParameters());
     }
-
 }

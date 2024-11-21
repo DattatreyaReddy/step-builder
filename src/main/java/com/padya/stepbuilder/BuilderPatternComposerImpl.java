@@ -4,7 +4,6 @@ import com.google.common.base.Function;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementFactory;
 import com.padya.stepbuilder.element.ElementGenerator;
 import com.padya.stepbuilder.model.Pojo;
@@ -13,17 +12,17 @@ import com.padya.stepbuilder.model.StepBuilderPattern;
 
 import static com.padya.stepbuilder.model.StepBuilderPattern.Builder.stepBuilderPattern;
 
-
 /**
  * @author makasprzak
  */
 public class BuilderPatternComposerImpl implements BuilderPatternComposer {
 
     private final PsiElementFactory psiElementFactory;
+
     private final ElementGenerator elementGenerator;
 
     public BuilderPatternComposerImpl(PsiElementFactory psiElementFactory,
-                                      ElementGenerator elementGenerator) {
+        ElementGenerator elementGenerator) {
         this.psiElementFactory = psiElementFactory;
         this.elementGenerator = elementGenerator;
     }
@@ -31,9 +30,9 @@ public class BuilderPatternComposerImpl implements BuilderPatternComposer {
     @Override
     public StepBuilderPattern build(Pojo pojo) {
         return stepBuilderPattern()
-                .withBuilderClass(builderClass(pojo))
-                .withStepInterfaces(stepInterfaces(pojo))
-                .build();
+            .withBuilderClass(builderClass(pojo))
+            .withStepInterfaces(stepInterfaces(pojo))
+            .build();
     }
 
     private PsiClass builderClass(Pojo pojo) {
@@ -50,41 +49,45 @@ public class BuilderPatternComposerImpl implements BuilderPatternComposer {
         return builderClass;
     }
 
-    private PsiElement addBuildMethod(Pojo pojo, PsiClass builderClass) {
-        return builderClass.add(psiElementFactory.createMethodFromText(elementGenerator.buildMethod(pojo), builderClass));
+    private void addBuildMethod(Pojo pojo, PsiClass builderClass) {
+        builderClass.add(psiElementFactory.createMethodFromText(elementGenerator.buildMethod(pojo),
+            builderClass));
     }
 
-    private PsiElement addStepMethod(Pojo pojo, PsiClass builderClass, Property property) {
-        return builderClass.add(psiElementFactory.createMethodFromText(elementGenerator.stepMethod(property, pojo.nextProperty(property)), builderClass));
+    private void addStepMethod(Pojo pojo, PsiClass builderClass, Property property) {
+        builderClass.add(psiElementFactory.createMethodFromText(
+            elementGenerator.stepMethod(property, pojo.nextProperty(property)), builderClass));
     }
 
     private void createAStaticFactoryMethodForTheBuilderClass(Pojo pojo, PsiClass builderClass) {
-        builderClass.add(psiElementFactory.createMethodFromText(elementGenerator.builderFactoryMethod(pojo), builderClass));
+        builderClass.add(
+            psiElementFactory.createMethodFromText(elementGenerator.builderFactoryMethod(pojo),
+                builderClass));
     }
 
     private void addBuilderInnerClass(PsiClass builderClass) {
-        builderClass.add(psiElementFactory.createMethodFromText(elementGenerator.builderConstructor(), builderClass));
+        builderClass.add(
+            psiElementFactory.createMethodFromText(elementGenerator.builderConstructor(),
+                builderClass));
     }
 
     private void includePropertyFieldInClass(Property property, PsiClass builderClass) {
-        builderClass.add(psiElementFactory.createFieldFromText(elementGenerator.fieldDeclaration(property), builderClass));
+        builderClass.add(
+            psiElementFactory.createFieldFromText(elementGenerator.fieldDeclaration(property),
+                builderClass));
     }
 
     private ImmutableList<PsiClass> stepInterfaces(final Pojo pojo) {
         return ImmutableList.<PsiClass>builder()
-                .addAll(
-                        Lists.transform(pojo.getProperties(), toStepInterface(pojo))
-                ).add(generateClass(elementGenerator.buildStepInterface(pojo))
-                ).build();
+            .addAll(
+                Lists.transform(pojo.getProperties(), toStepInterface(pojo))
+            ).add(generateClass(elementGenerator.buildStepInterface(pojo))
+            ).build();
     }
 
     private Function<Property, PsiClass> toStepInterface(final Pojo pojo) {
-        return new Function<Property, PsiClass>() {
-            @Override
-            public PsiClass apply(Property property) {
-                return generateClass(elementGenerator.stepInterface(property, pojo.nextProperty(property)));
-            }
-        };
+        return property -> generateClass(
+            elementGenerator.stepInterface(property, pojo.nextProperty(property)));
     }
 
     private PsiClass generateClass(String classText) {

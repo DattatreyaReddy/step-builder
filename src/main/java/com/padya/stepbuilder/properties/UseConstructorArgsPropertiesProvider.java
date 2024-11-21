@@ -6,7 +6,8 @@ public class UseConstructorArgsPropertiesProvider implements PropertiesProvider 
 
     private final ConstructorPropertiesAnalyzer constructorPropertiesAnalyzer;
 
-    public UseConstructorArgsPropertiesProvider(ConstructorPropertiesAnalyzer constructorPropertiesAnalyzer) {
+    public UseConstructorArgsPropertiesProvider(
+        ConstructorPropertiesAnalyzer constructorPropertiesAnalyzer) {
         this.constructorPropertiesAnalyzer = constructorPropertiesAnalyzer;
     }
 

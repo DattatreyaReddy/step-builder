@@ -20,37 +20,41 @@ import static com.padya.stepbuilder.model.Pojo.Builder.pojo;
  * @author makasprzak
  */
 public class StepBuilderGeneratorImpl implements StepBuilderGenerator {
+
     @Override
-    public void generateBuilderPattern(final List<Property> properties, final PsiClass psiClass, PsiElement currentElement) {
-        new WriteCommandAction.Simple(psiClass.getProject()) {
-            @Override
-            protected void run() throws Throwable {
-                includeInPojo(composeBuilderFor(pojo()
-                        .withName(psiClass.getName())
-                        .withProperties(properties)
-                        .withConstructorInjection(containsConstructorWithArgs(psiClass))
-                        .build()));
-            }
+    public void generateBuilderPattern(final List<Property> properties, final PsiClass psiClass,
+        PsiElement currentElement) {
+        WriteCommandAction.runWriteCommandAction(psiClass.getProject(), () -> {
+            Pojo pojo = createPojo(psiClass, properties);
+            StepBuilderPattern stepBuilderPattern = composeBuilderFor(pojo, psiClass.getProject());
+            includeInPojo(stepBuilderPattern, psiClass);
+        });
+    }
 
-            private StepBuilderPattern composeBuilderFor(Pojo pojo) {
-                return composer(getProject()).build(pojo);
-            }
+    private Pojo createPojo(PsiClass psiClass, List<Property> properties) {
+        return pojo()
+            .withName(psiClass.getName())
+            .withProperties(properties)
+            .withConstructorInjection(containsConstructorWithArgs(psiClass))
+            .build();
+    }
 
-            private void includeInPojo(StepBuilderPattern stepBuilderPattern) {
-                for (PsiClass inner : ImmutableList.<PsiClass>builder()
-                        .add(stepBuilderPattern.getBuilderClass())
-                        .addAll(stepBuilderPattern.getStepInterfaces())
-                        .build()) {
-                    reformat(inner);
-                    psiClass.add(inner);
-                }
-            }
+    private StepBuilderPattern composeBuilderFor(Pojo pojo, Project project) {
+        return composer(project).build(pojo);
+    }
 
+    private void includeInPojo(StepBuilderPattern stepBuilderPattern, PsiClass psiClass) {
+        for (PsiClass inner : ImmutableList.<PsiClass>builder()
+            .add(stepBuilderPattern.getBuilderClass())
+            .addAll(stepBuilderPattern.getStepInterfaces())
+            .build()) {
+            reformat(inner);
+            psiClass.add(inner);
+        }
+    }
 
-            private void reformat(PsiClass psiClass) {
-                CodeStyleManager.getInstance(getProject()).reformat(psiClass);
-            }
-        }.execute();
+    private void reformat(PsiClass psiClass) {
+        CodeStyleManager.getInstance(psiClass.getProject()).reformat(psiClass);
     }
 
     private BuilderPatternComposerImpl composer(Project project) {
@@ -63,5 +67,4 @@ public class StepBuilderGeneratorImpl implements StepBuilderGenerator {
         }
         return false;
     }
-
 }

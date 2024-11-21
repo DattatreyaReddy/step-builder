@@ -5,6 +5,7 @@ import java.util.List;
 
 public class StepBuilderPattern {
     private final PsiClass builderClass;
+
     private final List<PsiClass> stepInterfaces;
 
     private StepBuilderPattern(PsiClass builderClass, List<PsiClass> stepInterfaces) {
@@ -23,26 +24,26 @@ public class StepBuilderPattern {
     @Override
     public String toString() {
         return "StepBuilderPattern{" +
-                "builderClass=" + builderClass +
-                ", stepInterfaces=" + stepInterfaces +
-                '}';
+            "builderClass=" + builderClass +
+            ", stepInterfaces=" + stepInterfaces +
+            '}';
     }
 
-    public static interface BuilderClassStep {
+    public interface BuilderClassStep {
         StepInterfacesStep withBuilderClass(PsiClass builderClass);
     }
 
-    public static interface StepInterfacesStep {
+    public interface StepInterfacesStep {
         BuildStep withStepInterfaces(List<PsiClass> stepInterfaces);
     }
 
-    public static interface BuildStep {
+    public interface BuildStep {
         StepBuilderPattern build();
     }
 
-
     public static class Builder implements BuilderClassStep, StepInterfacesStep, BuildStep {
         private PsiClass builderClass;
+
         private List<PsiClass> stepInterfaces;
 
         private Builder() {
@@ -67,8 +68,8 @@ public class StepBuilderPattern {
         @Override
         public StepBuilderPattern build() {
             return new StepBuilderPattern(
-                    this.builderClass,
-                    this.stepInterfaces
+                this.builderClass,
+                this.stepInterfaces
             );
         }
     }

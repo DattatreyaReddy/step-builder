@@ -6,7 +6,7 @@
 
   <!-- Public plugin name should be written in Title Case.
        Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-name -->
-  <name>Step-builder</name>
+  <name>Step-Builder</name>
 
   <!-- A displayed Vendor name or Organization ID displayed on the Plugins Page. -->
   <vendor email="padya1201@gmail.com" url="https://www.padya.in">Padya</vendor>
@@ -15,7 +15,9 @@
        Simple HTML elements (text formatting, paragraphs, and lists) can be added inside of <![CDATA[ ]]> tag.
        Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-description -->
   <description><![CDATA[
-    A handy Step Builder pattern generator (http://rdafbn.blogspot.ie/2012/07/step-builder-pattern_28.html)
+    This plugin is a fork of makasprzak/step-builder-generator,
+    A handy Step Builder pattern generator
+    (https://rdafbn.blogspot.ie/2012/07/step-builder-pattern_28.html)
   ]]></description>
 
   <!-- Product and plugin compatibility requirements.

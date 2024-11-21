@@ -6,89 +6,89 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 public class PsiPropertyContainer {
-   private final PsiElement psiElement;
-   private final Property property;
+    private final PsiElement psiElement;
 
-   private PsiPropertyContainer(PsiElement psiElement, Property property) {
-      this.psiElement = psiElement;
-      this.property = property;
-   }
+    private final Property property;
 
-   public PsiElement getPsiElement() {
-      return psiElement;
-   }
+    private PsiPropertyContainer(PsiElement psiElement, Property property) {
+        this.psiElement = psiElement;
+        this.property = property;
+    }
 
-   public Property getProperty() {
-      return property;
-   }
+    public PsiElement getPsiElement() {
+        return psiElement;
+    }
 
-   @Override
-   public boolean equals(Object o) {
-      if (this == o) return true;
-      if (o == null || getClass() != o.getClass()) return false;
+    public Property getProperty() {
+        return property;
+    }
 
-      PsiPropertyContainer that = (PsiPropertyContainer) o;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
-      return Objects.equal(this.psiElement, that.psiElement) &&
-         Objects.equal(this.property, that.property);
-   }
+        PsiPropertyContainer that = (PsiPropertyContainer) o;
 
-   @Override
-   public int hashCode() {
-      return Objects.hashCode(psiElement, property);
-   }
+        return Objects.equal(this.psiElement, that.psiElement) &&
+            Objects.equal(this.property, that.property);
+    }
 
-   public static interface PsiElementStep {
-      PropertyStep withPsiElement(PsiElement psiElement);
-   }
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(psiElement, property);
+    }
 
-   public static interface PropertyStep {
-      BuildStep withProperty(Property property);
-   }
+    public interface PsiElementStep {
+        PropertyStep withPsiElement(PsiElement psiElement);
+    }
 
-   public static interface BuildStep {
-      PsiPropertyContainer build();
-   }
+    public interface PropertyStep {
+        BuildStep withProperty(Property property);
+    }
 
-   public static class Builder implements PsiElementStep, PropertyStep, BuildStep {
-      private PsiElement psiElement;
-      private Property property;
+    public interface BuildStep {
+        PsiPropertyContainer build();
+    }
 
-      private Builder() {
-      }
+    public static class Builder implements PsiElementStep, PropertyStep, BuildStep {
+        private PsiElement psiElement;
 
-      public static PsiElementStep psiPropertyContainer() {
-         return new Builder();
-      }
+        private Property property;
 
-      @Override
-      public PropertyStep withPsiElement(PsiElement psiElement) {
-         this.psiElement = psiElement;
-         return this;
-      }
+        private Builder() {
+        }
 
-      @Override
-      public BuildStep withProperty(Property property) {
-         this.property = property;
-         return this;
-      }
+        public static PsiElementStep psiPropertyContainer() {
+            return new Builder();
+        }
 
-      @Override
-      public PsiPropertyContainer build() {
-         return new PsiPropertyContainer(
-            this.psiElement,
-            this.property
-         );
-      }
-   }
+        @Override
+        public PropertyStep withPsiElement(PsiElement psiElement) {
+            this.psiElement = psiElement;
+            return this;
+        }
 
-   @Override
-   public String toString() {
-      return  new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
-         .append("psiElement", psiElement)
-         .append("property", property)
-         .toString();
-   }
+        @Override
+        public BuildStep withProperty(Property property) {
+            this.property = property;
+            return this;
+        }
 
+        @Override
+        public PsiPropertyContainer build() {
+            return new PsiPropertyContainer(
+                this.psiElement,
+                this.property
+            );
+        }
+    }
 
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
+            .append("psiElement", psiElement)
+            .append("property", property)
+            .toString();
+    }
 }

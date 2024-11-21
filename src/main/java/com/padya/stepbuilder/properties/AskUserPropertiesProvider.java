@@ -4,9 +4,9 @@ import com.intellij.psi.PsiClass;
 import com.padya.stepbuilder.dialog.DialogFactory;
 import com.padya.stepbuilder.dialog.GeneratorDialog;
 
-public class AskUserPropertiesProvider implements PropertiesProvider{
+public class AskUserPropertiesProvider implements PropertiesProvider {
 
-    private DialogFactory dialogFactory;
+    private final DialogFactory dialogFactory;
 
     public AskUserPropertiesProvider(DialogFactory dialogFactory) {
         this.dialogFactory = dialogFactory;
@@ -16,7 +16,8 @@ public class AskUserPropertiesProvider implements PropertiesProvider{
     public void getProperties(PsiClass psiClass, PropertiesConsumer consumer) {
         GeneratorDialog generatorDialog = dialogFactory.create(psiClass);
         generatorDialog.show();
-        if (generatorDialog.isOK())
+        if (generatorDialog.isOK()) {
             consumer.consume(generatorDialog.getProperties());
+        }
     }
 }

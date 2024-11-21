@@ -1,19 +1,19 @@
 package com.padya.stepbuilder.model;
 
-import com.google.common.base.Objects;
-import com.google.common.base.Optional;
 import java.util.List;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 public class Pojo {
     private final String name;
+
     private final List<Property> properties;
+
     private final boolean constructorInjection;
 
     private Pojo(String name,
-                 List<Property> properties, 
-                 boolean constructorInjection) {
+        List<Property> properties,
+        boolean constructorInjection) {
         this.name = name;
         this.properties = properties;
         this.constructorInjection = constructorInjection;
@@ -31,36 +31,40 @@ public class Pojo {
         return constructorInjection;
     }
 
-    public Optional<Property> nextProperty(Property property) {
-        if (!properties.contains(property)) throw new RuntimeException(property + " not found in " + this);
+    public Property nextProperty(Property property) {
+        if (!properties.contains(property)) {
+            throw new RuntimeException(property + " not found in " + this);
+        }
         int nextPropertyIndex = properties.indexOf(property) + 1;
         if (nextPropertyIndex == properties.size()) {
-            return Optional.absent();
+            return null;
         } else {
-            return Optional.of(properties.get(nextPropertyIndex));
+            return properties.get(nextPropertyIndex);
         }
     }
 
-    public static interface NameStep {
+    public interface NameStep {
         PropertiesStep withName(String name);
     }
 
-    public static interface PropertiesStep {
+    public interface PropertiesStep {
         ConstructorInjectionStep withProperties(List<Property> properties);
     }
 
-    public static interface ConstructorInjectionStep {
+    public interface ConstructorInjectionStep {
         BuildStep withConstructorInjection(boolean constructorInjection);
     }
 
-    public static interface BuildStep {
+    public interface BuildStep {
         Pojo build();
     }
 
-
-    public static class Builder implements NameStep, PropertiesStep, ConstructorInjectionStep, BuildStep {
+    public static class Builder
+        implements NameStep, PropertiesStep, ConstructorInjectionStep, BuildStep {
         private String name;
+
         private List<Property> properties;
+
         private boolean constructorInjection;
 
         private Builder() {
@@ -91,19 +95,19 @@ public class Pojo {
         @Override
         public Pojo build() {
             return new Pojo(
-                    this.name,
-                    this.properties,
-                    this.constructorInjection
+                this.name,
+                this.properties,
+                this.constructorInjection
             );
         }
 
         @Override
         public String toString() {
             return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
-                    .append("name", name)
-                    .append("properties", properties)
-                    .append("constructorInjection", constructorInjection)
-                    .toString();
+                .append("name", name)
+                .append("properties", properties)
+                .append("constructorInjection", constructorInjection)
+                .toString();
         }
     }
 }

@@ -6,6 +6,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 
 public class Property {
     private final String name;
+
     private final String type;
 
     private Property(String name, String type) {
@@ -24,9 +25,9 @@ public class Property {
     @Override
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
-                .append("name", name)
-                .append("type", type)
-                .toString();
+            .append("name", name)
+            .append("type", type)
+            .toString();
     }
 
     @Override
@@ -37,7 +38,7 @@ public class Property {
         Property that = (Property) o;
 
         return Objects.equal(this.name, that.name) &&
-                Objects.equal(this.type, that.type);
+            Objects.equal(this.type, that.type);
     }
 
     @Override
@@ -45,21 +46,21 @@ public class Property {
         return Objects.hashCode(name, type);
     }
 
-    public static interface NameStep {
+    public interface NameStep {
         TypeStep withName(String name);
     }
 
-    public static interface TypeStep {
+    public interface TypeStep {
         BuildStep withType(String type);
     }
 
-    public static interface BuildStep {
+    public interface BuildStep {
         Property build();
     }
 
-
     public static class Builder implements NameStep, TypeStep, BuildStep {
         private String name;
+
         private String type;
 
         private Builder() {
@@ -84,8 +85,8 @@ public class Property {
         @Override
         public Property build() {
             return new Property(
-                    this.name,
-                    this.type
+                this.name,
+                this.type
             );
         }
     }

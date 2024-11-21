@@ -1,7 +1,5 @@
 package com.padya.stepbuilder.element;
 
-import com.google.common.base.Function;
-import com.google.common.base.Optional;
 import com.padya.stepbuilder.model.Pojo;
 import com.padya.stepbuilder.model.Property;
 
@@ -13,20 +11,17 @@ import static org.apache.commons.lang.StringUtils.uncapitalize;
 
 public class ElementGenerator {
     public String builderClass(Pojo pojo) {
-        String steps = on(", ").join(transform(pojo.getProperties(), new Function<Property, String>() {
-            @Override
-            public String apply(Property property) {
-                return stepName(property);
-            }
-        }));
-        if(pojo.getProperties().isEmpty())
+        String steps = on(", ").join(transform(pojo.getProperties(), this::stepName));
+        if (pojo.getProperties().isEmpty()) {
             return "public static class Builder implements BuildStep {}";
-        else
+        } else {
             return "public static class Builder implements " + steps + ", BuildStep {}";
+        }
     }
 
     public String fieldDeclaration(Property property) {
-        return format("private %s %s;", property.getType().replaceAll("\\s?\\.\\.\\.", "[]"), property.getName());
+        return format("private %s %s;", property.getType().replaceAll("\\s?\\.\\.\\.", "[]"),
+            property.getName());
     }
 
     public String builderConstructor() {
@@ -35,70 +30,73 @@ public class ElementGenerator {
 
     public String builderFactoryMethod(Pojo pojo) {
         if (pojo.getProperties().isEmpty()) {
-            return format("public static %1$s %2$s() {\n" +
-                    "    return new %1$s();\n" +
-                    "}", pojo.getName(), uncapitalize(pojo.getName()));
+            return format("""
+                public static %1$s %2$s() {
+                    return new %1$s();
+                }""", pojo.getName(), uncapitalize(pojo.getName()));
         }
-        return format("public static %s %s() {\n" +
-                "    return new Builder();\n" +
-                "}", stepName(pojo.getProperties().get(0)), uncapitalize(pojo.getName()));
+        return format("""
+            public static %s %s() {
+                return new Builder();
+            }""", stepName(pojo.getProperties().get(0)), uncapitalize(pojo.getName()));
     }
 
-    public String stepMethod(Property forProperty, Optional<Property> nextProperty) {
-        return  format("@Override\n" +
-                        "public %1$s with%4$s(%3$s %2$s) {\n" +
-                        "\tthis.%2$s = %2$s;\n" +
-                        "\treturn this;\n" +
-                        "}\n",
-                nextProperty.isPresent() ? stepName(nextProperty.get()) : "BuildStep",
-                forProperty.getName(),
-                forProperty.getType(),
-                capitalize(forProperty.getName()));
+    public String stepMethod(Property forProperty, Property nextProperty) {
+        return format("""
+                @Override
+                public %1$s with%4$s(%3$s %2$s) {
+                \tthis.%2$s = %2$s;
+                \treturn this;
+                }
+                """,
+            nextProperty != null ? stepName(nextProperty) : "BuildStep",
+            forProperty.getName(),
+            forProperty.getType(),
+            capitalize(forProperty.getName()));
     }
 
     public String buildMethod(final Pojo pojo) {
         if (pojo.isConstructorInjection()) {
-            return format("@Override\n" +
-                    "public %1$s build() {\n" +
-                    "    return new %1$s(\n" +
-                    "    %2$s\n" +
-                    ");\n" +
-                    "}", pojo.getName(), on(",\n    ").join(transform(pojo.getProperties(), new Function<Property, String>() {
+            return format("""
                 @Override
-                public String apply(Property property) {
-                    return "this." + property.getName();
-                }
-            })));
+                public %1$s build() {
+                    return new %1$s(
+                    %2$s
+                );
+                }""", pojo.getName(), on(",\n    ").join(transform(pojo.getProperties(),
+                property -> "this." + property.getName())));
         }
-        return format("@Override\n" +
-                "public %1$s build() {\n" +
-                "    %1$s %2$s = new %1$s();\n" +
-                "    %3$s\n" +
-                "    return %2$s;\n" +
-                "}",pojo.getName(), uncapitalize(pojo.getName()), on("\n    ").join(transform(pojo.getProperties(), new Function<Property, String>() {
-            @Override
-            public String apply(Property property) {
-                return format("%s.set%s(this.%s);",uncapitalize(pojo.getName()),capitalize(property.getName()),property.getName());
-            }
-        })));
+        return format("""
+                @Override
+                public %1$s build() {
+                    %1$s %2$s = new %1$s();
+                    %3$s
+                    return %2$s;
+                }""", pojo.getName(), uncapitalize(pojo.getName()),
+            on("\n    ").join(transform(pojo.getProperties(),
+                property -> format("%s.set%s(this.%s);", uncapitalize(pojo.getName()),
+                    capitalize(property.getName()), property.getName()))));
     }
 
-    public String stepInterface(Property forProperty, Optional<Property> nextProperty) {
-        return format("public static interface %1$s {\n" +
-                        "\t%2$s with%3$s(%4$s %5$s);\n" +
-                        "}\n",
-                stepName(forProperty),
-                nextProperty.isPresent() ? stepName(nextProperty.get()) : "BuildStep",
-                capitalize(forProperty.getName()),
-                forProperty.getType(),
-                forProperty.getName()
+    public String stepInterface(Property forProperty, Property nextProperty) {
+        return format("""
+                public static interface %1$s {
+                \t%2$s with%3$s(%4$s %5$s);
+                }
+                """,
+            stepName(forProperty),
+            nextProperty != null ? stepName(nextProperty) : "BuildStep",
+            capitalize(forProperty.getName()),
+            forProperty.getType(),
+            forProperty.getName()
         );
     }
 
     public String buildStepInterface(Pojo pojo) {
-        return format("public static interface BuildStep {\n" +
-                "    %s build();\n" +
-                "}", pojo.getName());
+        return format("""
+            public static interface BuildStep {
+                %s build();
+            }""", pojo.getName());
     }
 
     private String stepName(Property property) {
