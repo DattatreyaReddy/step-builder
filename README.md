@@ -4,5 +4,7 @@ A Java [Step Builder](http://rdafbn.blogspot.ie/2012/07/step-builder-pattern_28.
 - This plugin is a fork of [makasprzak/step-builder-generator](https://github.com/makasprzak/step-builder-generator)
 
 - The ablove StepBuilder Plugin in Intellij is not working from version 2024.3
-- if you can't find the Generate Builder option in CMD+N, then you can try to install the compatible plugin from [Releases](https://github.com/DattatreyaReddy/step-builder/releases)
+- if you can't find the Generate Builder option in CMD+N, then you can try to install the compatible plugin from
+  - [IntelliJ Marketplace](https://plugins.jetbrains.com/plugin/25904-step-builder)
+  - [Releases](https://github.com/DattatreyaReddy/step-builder/releases)
 - Download step-builder-*-signed.zip and add the zip file as plugin
