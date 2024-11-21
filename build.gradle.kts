@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "com.padya"
-version = "1.0"
+version = "1.1"
 
 repositories {
   mavenCentral()
@@ -32,12 +32,16 @@ tasks {
 
   patchPluginXml {
     sinceBuild.set("230")
-    untilBuild.set("250.*")
+    untilBuild.set("300.*")
   }
 
   signPlugin {
     certificateChain.set(providers.environmentVariable("CERTIFICATE_CHAIN"))
     privateKey.set(providers.environmentVariable("PRIVATE_KEY"))
     password.set(providers.environmentVariable("PRIVATE_KEY_PASSWORD"))
+  }
+
+  publishPlugin {
+    token.set(providers.environmentVariable("PUBLISH_TOKEN"))
   }
 }
