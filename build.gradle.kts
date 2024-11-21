@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "com.padya"
-version = "1.2"
+version = "1.3"
 
 repositories {
   mavenCentral()
@@ -32,6 +32,7 @@ tasks {
 
   patchPluginXml {
     sinceBuild.set("232")
+    untilBuild.set(provider { null })
   }
 
   signPlugin {
