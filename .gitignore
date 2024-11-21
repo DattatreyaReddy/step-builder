@@ -42,6 +42,6 @@ bin/
 .DS_Store
 certificates/*.crt
 certificates/*.pem
-.idea/*
-.run/*
+.idea/
+.run/
 .sdkmanrc
