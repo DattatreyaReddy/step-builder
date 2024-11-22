@@ -9,7 +9,6 @@ public enum DialogFactories {
     private final DialogFactory dialogFactory;
 
     DialogFactories(DialogFactory dialogFactory) {
-
         this.dialogFactory = dialogFactory;
     }
 

@@ -6,6 +6,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiMethod;
+import com.intellij.psi.PsiParserFacade;
 import com.intellij.psi.codeStyle.CodeStyleManager;
 import java.util.List;
 import com.padya.stepbuilder.element.ElementGenerator;
@@ -50,6 +51,25 @@ public class StepBuilderGeneratorImpl implements StepBuilderGenerator {
             .build()) {
             reformat(inner);
             psiClass.add(inner);
+        }
+        if (psiClass.getAllInnerClasses().length == 0) {
+            return;
+        }
+        List<PsiClass> innerClasses = List.of(psiClass.getAllInnerClasses());
+        if (!innerClasses.isEmpty()) {
+            PsiClass firstInnerClass = innerClasses.get(0);
+            PsiClass lastInnerClass = innerClasses.get(innerClasses.size() - 1);
+
+            PsiParserFacade parserFacade = PsiParserFacade.getInstance(psiClass.getProject());
+            PsiElement newLine = parserFacade.createWhiteSpaceFromText("\n\n\t");
+
+            // Fold start
+            psiClass.addBefore(newLine, firstInnerClass);
+            psiClass.addBefore(stepBuilderPattern.getFoldStartComment(), firstInnerClass);
+
+            // Fold End
+            psiClass.addAfter(stepBuilderPattern.getFoldEndComment(), lastInnerClass);
+            psiClass.addAfter(newLine, lastInnerClass);
         }
     }
 
