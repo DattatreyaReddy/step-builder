@@ -4,7 +4,6 @@ import com.google.common.base.Function;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiComment;
 import com.intellij.psi.PsiElementFactory;
 import com.padya.stepbuilder.element.ElementGenerator;
 import com.padya.stepbuilder.model.Pojo;
@@ -33,20 +32,7 @@ public class BuilderPatternComposerImpl implements BuilderPatternComposer {
         return stepBuilderPattern()
             .withBuilderClass(builderClass(pojo))
             .withStepInterfaces(stepInterfaces(pojo))
-            .withFoldStartComment(startFoldComment())
-            .withFoldEndComment(endFoldComment())
             .build();
-    }
-
-    private PsiComment endFoldComment() {
-        return psiElementFactory.createCommentFromText(
-            elementGenerator.endFoldComment(), null);
-    }
-
-    private PsiComment startFoldComment() {
-        return psiElementFactory.createCommentFromText(
-            elementGenerator.startFoldComment(), null
-        );
     }
 
     private PsiClass builderClass(Pojo pojo) {

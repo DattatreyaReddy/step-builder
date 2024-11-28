@@ -10,14 +10,6 @@ import static org.apache.commons.lang3.StringUtils.capitalize;
 import static org.apache.commons.lang3.StringUtils.uncapitalize;
 
 public class ElementGenerator {
-    public String startFoldComment() {
-        return "// <editor-fold defaultstate=\"collapsed\" desc=\"Step-Builder\">";
-    }
-
-    public String endFoldComment() {
-        return "// </editor-fold>";
-    }
-
     public String builderClass(Pojo pojo) {
         String steps = on(", ").join(transform(pojo.getProperties(), this::stepName));
         if (pojo.getProperties().isEmpty()) {

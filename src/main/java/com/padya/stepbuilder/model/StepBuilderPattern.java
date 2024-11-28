@@ -9,16 +9,9 @@ public class StepBuilderPattern {
 
     private final List<PsiClass> stepInterfaces;
 
-    private final PsiComment foldStartComment;
-
-    private final PsiComment foldEndComment;
-
-    public StepBuilderPattern(PsiClass builderClass, List<PsiClass> stepInterfaces,
-        PsiComment foldStartComment, PsiComment foldEndComment) {
+    public StepBuilderPattern(PsiClass builderClass, List<PsiClass> stepInterfaces) {
         this.builderClass = builderClass;
         this.stepInterfaces = stepInterfaces;
-        this.foldStartComment = foldStartComment;
-        this.foldEndComment = foldEndComment;
     }
 
     public PsiClass getBuilderClass() {
@@ -29,53 +22,30 @@ public class StepBuilderPattern {
         return stepInterfaces;
     }
 
-    public PsiComment getFoldStartComment() {
-        return foldStartComment;
-    }
-
-    public PsiComment getFoldEndComment() {
-        return foldEndComment;
-    }
-
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return "StepBuilderPattern{" +
             "builderClass=" + builderClass +
             ", stepInterfaces=" + stepInterfaces +
-            ", foldStartComment=" + foldStartComment +
-            ", foldEndComment=" + foldEndComment +
             '}';
     }
 
-    public static interface BuilderClassStep {
+    public interface BuilderClassStep {
         StepInterfacesStep withBuilderClass(PsiClass builderClass);
     }
 
-    public static interface StepInterfacesStep {
-        FoldStartCommentStep withStepInterfaces(List<PsiClass> stepInterfaces);
+    public interface StepInterfacesStep {
+        BuildStep withStepInterfaces(List<PsiClass> stepInterfaces);
     }
 
-    public static interface FoldStartCommentStep {
-        FoldEndCommentStep withFoldStartComment(PsiComment foldStartComment);
-    }
-
-    public static interface FoldEndCommentStep {
-        BuildStep withFoldEndComment(PsiComment foldEndComment);
-    }
-
-    public static interface BuildStep {
+    public interface BuildStep {
         StepBuilderPattern build();
     }
 
-    public static class Builder
-        implements BuilderClassStep, StepInterfacesStep, FoldStartCommentStep, FoldEndCommentStep,
-        BuildStep {
+    public static class Builder implements BuilderClassStep, StepInterfacesStep, BuildStep {
         private PsiClass builderClass;
 
         private List<PsiClass> stepInterfaces;
-
-        private PsiComment foldStartComment;
-
-        private PsiComment foldEndComment;
 
         private Builder() {
         }
@@ -91,20 +61,8 @@ public class StepBuilderPattern {
         }
 
         @Override
-        public FoldStartCommentStep withStepInterfaces(List<PsiClass> stepInterfaces) {
+        public BuildStep withStepInterfaces(List<PsiClass> stepInterfaces) {
             this.stepInterfaces = stepInterfaces;
-            return this;
-        }
-
-        @Override
-        public FoldEndCommentStep withFoldStartComment(PsiComment foldStartComment) {
-            this.foldStartComment = foldStartComment;
-            return this;
-        }
-
-        @Override
-        public BuildStep withFoldEndComment(PsiComment foldEndComment) {
-            this.foldEndComment = foldEndComment;
             return this;
         }
 
@@ -112,9 +70,7 @@ public class StepBuilderPattern {
         public StepBuilderPattern build() {
             return new StepBuilderPattern(
                 this.builderClass,
-                this.stepInterfaces,
-                this.foldStartComment,
-                this.foldEndComment
+                this.stepInterfaces
             );
         }
     }
